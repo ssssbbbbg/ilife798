@@ -7,6 +7,7 @@ import platform.Foundation.NSCalendarUnitDay
 import platform.Foundation.NSCalendarUnitMonth
 import platform.Foundation.NSCalendarUnitWeekday
 import platform.Foundation.NSCalendarUnitYear
+import platform.Foundation.NSTimeIntervalSince1970
 import platform.Foundation.timeIntervalSince1970
 
 actual fun currentTimeMillis(): Long = (NSDate().timeIntervalSince1970 * 1000).toLong()
@@ -21,7 +22,7 @@ actual fun currentTimeFormatted(pattern: String): String = formatter(pattern).st
 actual fun formatTimestamp(
     timestamp: Long,
     pattern: String,
-): String = formatter(pattern).stringFromDate(NSDate(timeIntervalSince1970 = timestamp / 1000.0))
+): String = formatter(pattern).stringFromDate(NSDate(timeIntervalSinceReferenceDate = timestamp / 1000.0 + NSTimeIntervalSince1970))
 
 actual fun getDayOfWeek(): Int {
     val cal = NSCalendar.currentCalendar
@@ -32,7 +33,7 @@ actual fun getDayOfWeek(): Int {
 
 actual fun getTodayStart(now: Long): Long {
     val cal = NSCalendar.currentCalendar
-    val date = NSDate(timeIntervalSince1970 = now / 1000.0)
+    val date = NSDate(timeIntervalSinceReferenceDate = now / 1000.0 + NSTimeIntervalSince1970)
     val comps = cal.components(
         NSCalendarUnitYear or NSCalendarUnitMonth or NSCalendarUnitDay,
         fromDate = date,
@@ -41,5 +42,5 @@ actual fun getTodayStart(now: Long): Long {
     comps.minute = 0
     comps.second = 0
     val startDate = cal.dateFromComponents(comps)!!
-    return (startDate.timeIntervalSince1970 * 1000).toLong()
+    return ((startDate.timeIntervalSince1970) * 1000).toLong()
 }
