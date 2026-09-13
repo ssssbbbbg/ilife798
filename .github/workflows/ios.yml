@@ -116,11 +116,13 @@ jobs:
 
       - name: Export unsigned IPA
         run: |
-          xcodebuild \
-            -exportArchive \
-            -archivePath "$RUNNER_TEMP/ILife798.xcarchive" \
-            -exportOptionsPlist iosApp/ExportOptions.plist \
-            -exportPath "$RUNNER_TEMP/export"
+          APP_PATH="$RUNNER_TEMP/ILife798.xcarchive/Products/Applications/ILife798.app"
+          test -d "$APP_PATH"
+          mkdir -p "$RUNNER_TEMP/export/Payload"
+          cp -R "$APP_PATH" "$RUNNER_TEMP/export/Payload/"
+          cd "$RUNNER_TEMP/export"
+          ditto -c -k --sequesterRsrc --keepParent "Payload" "ILife798.ipa"
+          ls -la "$RUNNER_TEMP/export/ILife798.ipa"
 
       - name: Upload IPA artifact
         uses: actions/upload-artifact@v7
