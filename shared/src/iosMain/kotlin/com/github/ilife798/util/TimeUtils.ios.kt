@@ -1,20 +1,13 @@
-package com.github.ilife798
+package com.github.ilife798.util
 
 import platform.Foundation.NSDate
 import platform.Foundation.NSDateFormatter
 import platform.Foundation.NSCalendar
 import platform.Foundation.NSCalendarUnitDay
-import platform.Foundation.NSCalendarUnitEra
-import platform.Foundation.NSCalendarUnitHour
-import platform.Foundation.NSCalendarUnitMinute
 import platform.Foundation.NSCalendarUnitMonth
-import platform.Foundation.NSCalendarUnitSecond
+import platform.Foundation.NSCalendarUnitWeekday
 import platform.Foundation.NSCalendarUnitYear
-import platform.Foundation.NSDateComponents
-import platform.Foundation.NSTimeZone
-import platform.Foundation.currentCalendar
 import platform.Foundation.timeIntervalSince1970
-import platform.Foundation.timeZone
 
 actual fun currentTimeMillis(): Long = (NSDate().timeIntervalSince1970 * 1000).toLong()
 
@@ -28,7 +21,7 @@ actual fun currentTimeFormatted(pattern: String): String = formatter(pattern).st
 actual fun formatTimestamp(
     timestamp: Long,
     pattern: String,
-): String = formatter(pattern).stringFromDate(NSDate.dateWithTimeIntervalSince1970(timestamp / 1000.0))
+): String = formatter(pattern).stringFromDate(NSDate(timeIntervalSince1970 = timestamp / 1000.0))
 
 actual fun getDayOfWeek(): Int {
     val cal = NSCalendar.currentCalendar
@@ -39,9 +32,11 @@ actual fun getDayOfWeek(): Int {
 
 actual fun getTodayStart(now: Long): Long {
     val cal = NSCalendar.currentCalendar
-    val date = NSDate.dateWithTimeIntervalSince1970(now / 1000.0)
-    val units = NSCalendarUnitYear or NSCalendarUnitMonth or NSCalendarUnitDay
-    val comps = cal.components(units, fromDate = date)
+    val date = NSDate(timeIntervalSince1970 = now / 1000.0)
+    val comps = cal.components(
+        NSCalendarUnitYear or NSCalendarUnitMonth or NSCalendarUnitDay,
+        fromDate = date,
+    )
     comps.hour = 0
     comps.minute = 0
     comps.second = 0
