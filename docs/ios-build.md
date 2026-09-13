@@ -1,6 +1,6 @@
 # iOS 版本构建说明
 
-本项目在 `shared` 模块新增了 iOS 目标（`iosArm64` / `iosX64` / `iosSimulatorArm64`），
+本项目在 `shared` 模块新增了 iOS 目标（`iosArm64` / `iosSimulatorArm64`），
 并提供了 `iosApp` Xcode 工程与 GitHub Actions 工作流。
 
 ## 目录结构
