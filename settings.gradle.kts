@@ -16,3 +16,4 @@ pluginManagement {
 
 include(":androidApp")
 include(":shared")
+include(":iosApp")

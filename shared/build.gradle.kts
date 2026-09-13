@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -8,6 +9,7 @@ plugins {
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.aboutLibraries)
     alias(libs.plugins.spotless)
+    alias(libs.plugins.buildkonfig)
 }
 
 aboutLibraries {
@@ -33,9 +35,48 @@ compose.resources {
     packageOfResClass = "com.github.ilife798.shared.resources"
 }
 
+val secretsProps =
+    Properties().apply {
+        val f = rootProject.file("secrets.properties")
+        if (f.exists()) f.inputStream().use { load(it) }
+    }
+
+buildkonfig {
+    packageName = "com.github.ilife798"
+
+    defaultConfigs {
+        buildConfigField(
+            com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING,
+            "GATEWAY",
+            "\"${secretsProps.getProperty("API_GATEWAY", "")}\"",
+        )
+        buildConfigField(
+            com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING,
+            "SIGN_SALT",
+            "\"${secretsProps.getProperty("SIGN_SALT", "")}\"",
+        )
+        buildConfigField(
+            com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING,
+            "API_CID",
+            "\"${secretsProps.getProperty("API_CID", "")}\"",
+        )
+    }
+}
+
 kotlin {
     compilerOptions {
         freeCompilerArgs.add("-Xexpect-actual-classes")
+    }
+
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64(),
+    ).forEach { iosTarget ->
+        iosTarget.binaries.framework {
+            baseName = "Shared"
+            isStatic = true
+        }
     }
 
     android {
@@ -69,6 +110,9 @@ kotlin {
             implementation(libs.androidx.camera.lifecycle)
             implementation(libs.androidx.camera.view)
             implementation(libs.zxing.core)
+        }
+        iosMain.dependencies {
+            implementation(libs.ktor.darwin)
         }
         commonMain.dependencies {
             @Suppress("DEPRECATION")

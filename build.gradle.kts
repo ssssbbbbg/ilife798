@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform) apply false
     alias(libs.plugins.aboutLibraries) apply false
     alias(libs.plugins.spotless) apply false
+    alias(libs.plugins.buildkonfig) apply false
 }
 
 // 统一 Kotlin 代码格式；规则见 .editorconfig 与下方 ktlint 配置。格式化为 ./gradlew spotlessApply，检查为 spotlessCheck
